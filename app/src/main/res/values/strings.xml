@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Select Language Demo</string>
-    <string name="language_settings">Language</string>
+    <string name="language_settings">Switch Language</string>
+    <string name="mainText">Your Chosen Language</string>
 </resources>

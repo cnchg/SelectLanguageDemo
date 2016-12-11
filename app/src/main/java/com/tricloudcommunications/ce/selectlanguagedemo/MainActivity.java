@@ -1,7 +1,9 @@
 package com.tricloudcommunications.ce.selectlanguagedemo;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,8 +13,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
+
+    SharedPreferences sharedPreferences;
+    TextView mainTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mainTV = (TextView) findViewById(R.id.languageTextView);
+
+        sharedPreferences = this.getSharedPreferences("userLanguage", Context.MODE_PRIVATE);
+        String selectedLanguage = sharedPreferences.getString("userLanguage", "No yet selected");
+
+        mainTV.setText(selectedLanguage);
+
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Select Language")
@@ -38,12 +53,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        sharedPreferences.edit().putString("userLanguage", "English");
+
                         Log.i("Language selected: ", "English");
                     }
                 })
                 .setNegativeButton("Spanish", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
+                        sharedPreferences.edit().putString("userLanguage", "Spanish");
 
                         Log.i("Language selected: ", "Spanish");
                     }
@@ -66,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.language_settings) {
+
+            Log.i("Language setting", "Lanuage Changed");
+
             return true;
         }
 
