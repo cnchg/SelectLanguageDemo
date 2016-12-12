@@ -2,4 +2,6 @@
     <string name="app_name">Select Language Demo</string>
     <string name="language_settings">Switch Language</string>
     <string name="mainText">Your Chosen Language</string>
+    <string name="imageDescription">Just an Image</string>
+    <string name="clearPermData">Clear the shared Preference</string>
 </resources>

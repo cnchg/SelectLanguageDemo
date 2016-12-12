@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -21,6 +22,59 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
     TextView mainTV;
+    ImageView mainIV;
+    ImageView clearPrefIV;
+    String selectedLanguage;
+
+    public void clearSharedPreferences(View view){
+
+        sharedPreferences.edit().remove("userLanguage").apply();
+
+        Log.i("Preferences Status", "Cleared");
+
+    }
+
+    public void languageAlert() {
+
+        mainIV.setVisibility(View.INVISIBLE);
+
+         if (selectedLanguage.equals("")){
+
+             new AlertDialog.Builder(this)
+                 .setIcon(android.R.drawable.ic_dialog_alert)
+                 .setTitle("Select Language")
+                 .setMessage("What language would you like?")
+                 .setPositiveButton("English", new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) {
+
+                        sharedPreferences.edit().putString("userLanguage", "English").apply();
+                        mainTV.setText(selectedLanguage);
+                        Log.i("Language selected: ", "English");
+
+                    }
+                })
+                .setNegativeButton("Spanish", new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) {
+
+                        sharedPreferences.edit().putString("userLanguage", "Spanish").apply();
+                        mainTV.setText(selectedLanguage);
+                        Log.i("Language selected: ", "Spanish");
+
+                    }
+                })
+                .show();
+
+             Log.i("preferenceStatus", "EMPTY-AND WAS-ADDED");
+
+         }else{
+
+             mainTV.setText(selectedLanguage);
+             Log.i("preferenceStatus", "WAS-NOT-EMPTY");
+         }
+
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,45 +83,23 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         mainTV = (TextView) findViewById(R.id.languageTextView);
+        mainIV = (ImageView) findViewById(R.id.imageView);
+        clearPrefIV = (ImageView) findViewById(R.id.imageView2);
 
-        sharedPreferences = this.getSharedPreferences("userLanguage", Context.MODE_PRIVATE);
-        String selectedLanguage = sharedPreferences.getString("userLanguage", "No yet selected");
+        sharedPreferences = this.getSharedPreferences("com.tricloudcommunications.ce.selectlanguagedemo", Context.MODE_PRIVATE);
+        selectedLanguage = sharedPreferences.getString("userLanguage", "");
+        mainIV.setVisibility(View.VISIBLE);
+        //sharedPreferences.edit().remove("userLanguage").apply();
 
-        mainTV.setText(selectedLanguage);
+        languageAlert();
 
-        new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Select Language")
-                .setMessage("What language would you like?")
-                .setPositiveButton("English", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        if (!selectedLanguage.equals("")){
 
-                        sharedPreferences.edit().putString("userLanguage", "English");
+            clearPrefIV.setVisibility(View.VISIBLE);
+        }
 
-                        Log.i("Language selected: ", "English");
-                    }
-                })
-                .setNegativeButton("Spanish", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                        sharedPreferences.edit().putString("userLanguage", "Spanish");
-
-                        Log.i("Language selected: ", "Spanish");
-                    }
-                })
-                .show();
     }
 
     @Override
@@ -87,7 +119,36 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.language_settings) {
 
-            Log.i("Language setting", "Lanuage Changed");
+            if (selectedLanguage.equals("English")){
+                //if the language is English we are going to switch it to Spanish
+                sharedPreferences.edit().putString("userLanguage", "Spanish").apply();
+
+                //Then update the mainTV
+                mainTV.setText(selectedLanguage);
+
+                Log.i("Switch Status", "switch to Spanish");
+
+
+            }else if (selectedLanguage.equals("Spanish")){
+                //if the language is Spanish we are going to switch it to English
+                sharedPreferences.edit().putString("userLanguage", "English").apply();
+
+                //Then update the mainTV
+                mainTV.setText(selectedLanguage);
+
+                Log.i("Switch Status", "switch to English");
+
+            }else{
+
+                //Then update the mainTV
+                //mainTV.setText("Please Select a Language");
+
+                languageAlert();
+                Log.i("Switch Status", "No Switch was made it");
+
+            }
+
+            Log.i("Language setting", "Lanuage Changed Requested");
 
             return true;
         }
