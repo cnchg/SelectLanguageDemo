@@ -36,42 +36,34 @@ public class MainActivity extends AppCompatActivity {
 
     public void languageAlert() {
 
-        mainIV.setVisibility(View.INVISIBLE);
 
-         if (selectedLanguage.equals("")){
+         new AlertDialog.Builder(this)
+             .setIcon(android.R.drawable.ic_dialog_alert)
+             .setTitle("Select Language")
+             .setMessage("What language would you like?")
+             .setPositiveButton("English", new DialogInterface.OnClickListener() {
+                @Override public void onClick(DialogInterface dialog, int which) {
 
-             new AlertDialog.Builder(this)
-                 .setIcon(android.R.drawable.ic_dialog_alert)
-                 .setTitle("Select Language")
-                 .setMessage("What language would you like?")
-                 .setPositiveButton("English", new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
+                    sharedPreferences.edit().putString("userLanguage", "English").apply();
+                    mainTV.setText("English");
+                    mainIV.setVisibility(View.VISIBLE);
+                    clearPrefIV.setVisibility(View.VISIBLE);
+                    Log.i("Language selected: ", "English");
 
-                        sharedPreferences.edit().putString("userLanguage", "English").apply();
-                        mainTV.setText(selectedLanguage);
-                        Log.i("Language selected: ", "English");
+                }
+            })
+            .setNegativeButton("Spanish", new DialogInterface.OnClickListener() {
+                @Override public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                })
-                .setNegativeButton("Spanish", new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
+                    sharedPreferences.edit().putString("userLanguage", "Spanish").apply();
+                    mainTV.setText("Spanish");
+                    mainIV.setVisibility(View.VISIBLE);
+                    clearPrefIV.setVisibility(View.VISIBLE);
+                    Log.i("Language selected: ", "Spanish");
 
-                        sharedPreferences.edit().putString("userLanguage", "Spanish").apply();
-                        mainTV.setText(selectedLanguage);
-                        Log.i("Language selected: ", "Spanish");
-
-                    }
-                })
-                .show();
-
-             Log.i("preferenceStatus", "EMPTY-AND WAS-ADDED");
-
-         }else{
-
-             mainTV.setText(selectedLanguage);
-             Log.i("preferenceStatus", "WAS-NOT-EMPTY");
-         }
-
+                }
+            })
+            .show();
 
     }
 
@@ -89,16 +81,20 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = this.getSharedPreferences("com.tricloudcommunications.ce.selectlanguagedemo", Context.MODE_PRIVATE);
         selectedLanguage = sharedPreferences.getString("userLanguage", "");
-        mainIV.setVisibility(View.VISIBLE);
         //sharedPreferences.edit().remove("userLanguage").apply();
 
-        languageAlert();
+        if (selectedLanguage.equals("")){
 
-        if (!selectedLanguage.equals("")){
+            languageAlert();
+            Log.i("preferenceStatus", "EMPTY-AND WAS-ADDED");
 
+        }else{
+
+            mainTV.setText(selectedLanguage);
+            mainIV.setVisibility(View.VISIBLE);
             clearPrefIV.setVisibility(View.VISIBLE);
+            Log.i("preferenceStatus", "WAS-NOT-EMPTY");
         }
-
 
     }
 
@@ -119,35 +115,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.language_settings) {
 
-            if (selectedLanguage.equals("English")){
-                //if the language is English we are going to switch it to Spanish
-                sharedPreferences.edit().putString("userLanguage", "Spanish").apply();
-
-                //Then update the mainTV
-                mainTV.setText(selectedLanguage);
-
-                Log.i("Switch Status", "switch to Spanish");
-
-
-            }else if (selectedLanguage.equals("Spanish")){
-                //if the language is Spanish we are going to switch it to English
-                sharedPreferences.edit().putString("userLanguage", "English").apply();
-
-                //Then update the mainTV
-                mainTV.setText(selectedLanguage);
-
-                Log.i("Switch Status", "switch to English");
-
-            }else{
-
-                //Then update the mainTV
-                //mainTV.setText("Please Select a Language");
-
-                languageAlert();
-                Log.i("Switch Status", "No Switch was made it");
-
-            }
-
+            languageAlert();
             Log.i("Language setting", "Lanuage Changed Requested");
 
             return true;
